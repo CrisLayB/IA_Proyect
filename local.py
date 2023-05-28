@@ -5,16 +5,17 @@ EMPTY = 0
 PLAYER1 = 1
 PLAYER2 = 2
 
-board = [
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-]
+def define_empty_game():
+    return [
+        [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+        [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+        [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+        [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+        [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+        [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+    ]
 
-def edit_board(num : int, type_player : int) -> None:
+def edit_board(board : list[list], num : int, type_player : int) -> None:
     # Eximar desde la ultima fila hasta el principio
     count = len(board) - 1
     while count >= 0:
@@ -27,9 +28,10 @@ def edit_board(num : int, type_player : int) -> None:
                 return True
         count -= 1
     
+    print("\nIngresaste una columna que ya esta llena, porfavor ingresa otro\n")
     return False
 
-def check_4_circles_is_connected():
+def is_a_winner_ready(board : list[list]) -> int:
     # Revisar horizontalmente
     for row in range(6):
         for col in range(4):
@@ -68,44 +70,64 @@ def check_4_circles_is_connected():
     
     return None # Cuando todavia no hay ganador
 
-def game_print():
+def is_draw(board : list[list]) -> bool:    
+    for i in board:
+        for j in i:
+            if j == EMPTY:
+                return False
+    return True
+
+def game_print(board : list[list]) -> None:
     print("\n")
     for table in board:
         print(table)
     print("\n")
 
+def player_set(board : list[list], player_num : int) -> None:
+    choice = -1
+    while choice < 0 or choice > 6:
+        choice = int(input(f"PLAYER {player_num}: Ingrese un numero (0-6): "))                
+        if not edit_board(board, choice, player_num): choice = -1
+
+def ia_set(board : list[list], player_num : int, ai_player : PowerfullAI) -> None:
+    choice = -1
+    while choice < 0 or choice > 6:
+        choice = ai_player.best_move(board)
+        if not edit_board(board, choice, player_num): choice = -1
+
 ai = PowerfullAI()
 player_turn = random.randint(1, 2)
 finish = False
+board = define_empty_game()
 
 while not finish:
     # Imprimir tabla de allconnect-4
-    game_print()
+    game_print(board)
 
-    choice = -1
-
-    # Turno de jugador
-    if player_turn == 1:
-        while choice < 0 or choice > 6:
-            choice = int(input("PLAYER 1: Ingrese un numero (0-6): "))    
-        edit_board(choice, 1)
-        player_turn = 2
-        winner = check_4_circles_is_connected()
-        if winner != None:
-            game_print()
-            print(f"WINNER PLAYER #: {winner}\n")
-            finish = True
+    # Revisar si ya hay un ganador
+    winner = is_a_winner_ready(board)
+    if winner != None:
+        print(f"WINNER PLAYER #: {winner}\n")
+        finish = True if input("¿Deseas seguir jugando? (s/n): ").lower() == "n" else False
+        board = define_empty_game()
         continue
 
-    # Turno de IA
+    # Revisar si es empate
+    if is_draw(board):
+        print(f"ESTO FUE UN EMPATE\n")
+        finish = True if input("¿Deseas seguir jugando? (s/n): ").lower() == "n" else False
+        board = define_empty_game()
+        continue
+
+    # Turno de Primer Jugador
+    if player_turn == 1:
+        player_set(board, 1) # ! Ingresar jugador con input
+        player_turn = 2        
+        continue
+
+    # Turno de Segundo Jugador
     if player_turn == 2:
-        while choice < 0 or choice > 6:
-            choice = int(input("PLAYER 2: Ingrese un numero (0-6): "))    
-        edit_board(choice, 2)
+        # player_set(board, 2) # ! Ingresar jugador con input
+        ia_set(board, 2, ai) # ? Poner IA a jugar contra nosotros
         player_turn = 1
-        winner = check_4_circles_is_connected()
-        if winner != None:
-            game_print()
-            print(f"WINNER PLAYER #: {winner}\n")
-            finish = True
         continue

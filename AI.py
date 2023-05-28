@@ -1,5 +1,12 @@
+# Definir constantes que nos serviran
 INF = float('inf')
 
+'''
+TOMAR EN CUENTA LO SIGUIENTE:
+-> min-max
+-> alpha/beta
+-> heuristica
+'''
 class PowerfullAI(object):
     # Constructor
     def __init__(self) -> None:
@@ -7,7 +14,8 @@ class PowerfullAI(object):
 
     # Metodos publicos
     def best_move(self, board : list) -> int:
-        return
+        # retornara un numero entre 0-6
+        return 6 # ! Obviamente no dejare esto jaja
     
     # Metodos privados
     def __value(self, s):
