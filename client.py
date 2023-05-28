@@ -1,19 +1,26 @@
 # python3 client.py Cristian 192.168.1.134 4000 142857
 
+from AI import PowerfullAI
 from socketIO_client import SocketIO
 import random
 import sys
 
+# Solicitar argumentos
 if len(sys.argv) != 5:
     print("Invalid Args")
     quit()
 
+# Imprimir bien los valores
 user_name = sys.argv[1]
 server_url = "http://" + sys.argv[2]
 server_port = sys.argv[3]
 id_tournament = int(sys.argv[4])
 
+# Crear socket para conectarse
 socketIO = SocketIO(server_url, server_port)
+
+# Llamar a la IA
+ai = PowerfullAI()
 
 def on_connect():
     print("Connected to server")
