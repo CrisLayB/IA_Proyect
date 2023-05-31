@@ -92,7 +92,7 @@ def player_set(board : list[list], player_num : int) -> None:
 def ia_set(board : list[list], player_num : int, ai_player : PowerfullAI) -> None:
     choice = -1
     while choice < 0 or choice > 6:
-        choice = ai_player.best_move(board)
+        choice = ai_player.best_move(board, player_num)
         if not edit_board(board, choice, player_num): choice = -1
 
 ai = PowerfullAI()
@@ -122,6 +122,7 @@ while not finish:
     # Turno de Primer Jugador
     if player_turn == 1:
         player_set(board, 1) # ! Ingresar jugador con input
+        # ia_set(board, 1, ai) # ? Poner IA a jugar contra nosotros
         player_turn = 2        
         continue
 

@@ -1,4 +1,4 @@
-# python3 client.py Cristian 192.168.1.134 4000 142857
+# python3 client.py CristianPy 192.168.1.131 4000 142857
 
 from AI import PowerfullAI
 from socketIO_client import SocketIO
@@ -38,9 +38,14 @@ def on_ready(data):
     player_turn_id = data['player_turn_id']
     board = data['board']
     
+    print("=============================")
+    print(data)
+    print("=============================")
+    print(board)
+    print("=============================")
     # TODO: Your logic / user input here
     # Mejor movimiento # Matriz : 7 * 6
-    move = random.randint(0, 6)
+    move = ai.best_move(board, player_turn_id)
 
     print("Move in:", move)
     socketIO.emit('play', {
