@@ -1,8 +1,11 @@
-# python3 client.py CristianPy 192.168.1.131 4000 142857
+# => IP PRUEBAS LOCALES PERSONALES
+# python3 client.py CristianPy2 10.100.2.41 4000 142857
+
+# => IP SERVIDOR DE SAMUEL
+# python3 client.py Cristian 192.168.1.104 4000 142857 
 
 from AI import PowerfullAI
 from socketIO_client import SocketIO
-import random
 import sys
 
 # Solicitar argumentos
@@ -73,9 +76,13 @@ def on_finish(data):
         'game_id': game_id
     })
 
+def disconnected():
+    print("Server Disconected")
+
 socketIO.on('connect', on_connect)
 socketIO.on('ok_signin', on_ok_signin)
 socketIO.on('ready', on_ready)
 socketIO.on('finish', on_finish)
+socketIO.on('disconnect', disconnected)
 
 socketIO.wait()

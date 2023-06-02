@@ -41,6 +41,7 @@ socket.on('ready', function(data){
     
     // TODO: Your logic / user input here
     // Mejor movimiento // Matriz : 7 * 6
+    console.log(data)
     
     socket.emit('play', {
         tournament_id: idTournament,
