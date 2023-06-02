@@ -58,7 +58,6 @@ socket.on('finish', function(data){
     var board = data.board;
     
     // TODO: Your cleaning board logic here
-    // ...
     
     socket.emit('player_ready', {
         tournament_id: idTournament,
@@ -71,3 +70,5 @@ socket.on('disconnect', function(){
         console.log("Server Disconected");
     }
 );
+
+// ! PD: Se dejo este cliente para hacer algunas pruebas dummy y para medio shutear jaja

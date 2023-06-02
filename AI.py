@@ -1,6 +1,3 @@
-# Librerias necesarias
-import random
-
 # Definir constantes que nos serviran
 INF = float('inf')
 COLS = 7
@@ -33,12 +30,11 @@ class PowerfullAI(object):
         self.enemy_turn = 1 if(self.player_turn != 1) else 2
 
         # Tomar en cuenta otros aspectos
-        board_copy = [row.copy() for row in self.board]
         alpha = -INF
         beta = INF
 
         # Vamos a generar todos los movimientos y se procedera a analizarlos
-        move, _ = self.__minimax(board_copy, depth, alpha, beta, True, self.player_turn)
+        move, _ = self.__minimax(self.board, depth, alpha, beta, True, self.player_turn)
 
         # retornara un numero entre 0-6        
         return move
@@ -50,12 +46,13 @@ class PowerfullAI(object):
         if depth == 0 or not moves: 
             return (None, self.__heuristic_eval(player))
 
+        # Se maximizara al jugador
         if max_player:
             max_score = -INF
             best_move = None
 
             for move in moves:
-                temp_board = self.new_board(board, move, player)
+                temp_board = self.__set_disk(board, move, player)
                 _, new_score = self.__minimax(temp_board, depth - 1, alpha, beta, False, self.player_turn)
 
                 if new_score > max_score:
@@ -67,25 +64,26 @@ class PowerfullAI(object):
                     break
 
             return (best_move, max_score)
-        else:  # Minimizing player
-            min_score = INF
-            best_move = None
-
-            for move in moves:
-                temp_board = self.new_board(board, move, 2 if self.player_turn == 1 else 1)
-                _, new_score = self.__minimax(temp_board, depth - 1, alpha, beta, True, self.player_turn)
-
-                if new_score < min_score:
-                    min_score = new_score
-                    best_move = move
-
-                beta = min(beta, min_score)
-                if alpha >= beta:
-                    break
-
-            return (best_move, min_score)
         
-    def new_board(self, board, column_index, player):
+        # Minimizando al jugador
+        min_score = INF
+        best_move = None
+
+        for move in moves:
+            temp_board = self.__set_disk(board, move, 2 if player == 1 else 1)
+            _, new_score = self.__minimax(temp_board, depth - 1, alpha, beta, True, self.player_turn)
+
+            if new_score < min_score:
+                min_score = new_score
+                best_move = move
+
+            beta = min(beta, min_score)
+            if alpha >= beta:
+                break
+
+        return (best_move, min_score)
+        
+    def __set_disk(self, board, column_index, player):
         create = [row.copy() for row in board]
 
         for row in range(ROWS - 1, -1, -1):
